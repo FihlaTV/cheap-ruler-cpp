@@ -93,6 +93,37 @@ public:
     }
 
     //
+    // Given a point p and a line segment with end points a and b, points are in form of [x = longitude, y = latitude].
+    // Return the shortes distance from p to segment a->b.
+    //
+    double distanceToLineSegment(const point& p, const point& a, const point& b){
+        const point vectorAB{(b.x - a.x) * kx, (b.y - a.y)* ky};
+        const point vectorAP{(p.x - a.x) * kx, (p.y - a.y)* ky};
+
+        const auto dotProduct = [](const point& v,const point& w) {
+            return v.x * w.x + v.y * w.y;
+        };
+
+        const double dot1 = dotProduct(vectorAB, vectorAP);
+
+        // shortest distance is from p to a
+        if (dot1 <= 0.0) return distance(p, a);
+
+        const double dot2 = dotProduct(vectorAB, vectorAB);
+
+        // shortest distance is from p to b
+        if (dot2 <= dot1) return distance(p, b);
+
+        assert(dot2 != 0);
+        const double ratio =  dot1 / dot2;
+
+        // shortest distance is perpendicular distance from p to a->b, which is
+        // distance from point p to pointOnAB
+        point pointOnAB{(a.x + vectorAB.x * ratio/kx), (a.y + vectorAB.y * ratio /ky)};
+        return distance(p, pointOnAB);
+    }
+
+    //
     // Returns the bearing between two points in angles.
     //
     double bearing(point a, point b) {
