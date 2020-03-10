@@ -119,7 +119,7 @@ public:
 
         // shortest distance is perpendicular distance from p to a->b, which is
         // distance from point p to pointOnAB
-        point pointOnAB{(a.x + vectorAB.x * ratio/kx), (a.y + vectorAB.y * ratio /ky)};
+        point pointOnAB{(a.x + vectorAB.x * ratio / kx), (a.y + vectorAB.y * ratio / ky)};
         return distance(p, pointOnAB);
     }
 

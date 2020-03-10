@@ -4,6 +4,8 @@
 #include "fixtures/lines.hpp"
 #include "fixtures/turf.hpp"
 
+#include <limits>
+
 namespace cr = mapbox::cheap_ruler;
 
 class CheapRulerTest : public ::testing::Test {
@@ -29,6 +31,20 @@ TEST_F(CheapRulerTest, distance) {
         auto actual = ruler.distance(points[i], points[i + 1]);
 
         assertErr(expected, actual, .003);
+    }
+}
+
+
+TEST_F(CheapRulerTest, distanceToLineSegment) {
+    cr::point point{ -96.920341, 32.838261 };
+    for (unsigned i = 0; i < lines.size(); ++i) {
+        const auto& line = lines[i];
+        double actual = std::numeric_limits<double>::infinity();
+        for (unsigned j = 0; j < line.size() - 1; ++j) {
+           actual = std::min(actual, ruler.distanceToLineSegment(point, line[j], line[j+1]));
+        }
+        auto expected = truf_point_to_line_distance[i];
+        assertErr(expected, actual, 0.003);
     }
 }
 
